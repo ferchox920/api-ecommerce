@@ -5,7 +5,8 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
 import { userRouter } from "../routes/user.routes";
-import routerAuth from "../auth/auth.controller";
+import routerAuth from "../auth/controller/auth.controller";
+
 
 
 
