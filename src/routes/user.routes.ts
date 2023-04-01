@@ -44,7 +44,7 @@ userRouter.get("/id/:id", async (req: Request, res: Response) => {
 userRouter.get("/email", async (req: Request, res: Response) => {
   const userDTO: UserDTO = req.body;
   try {
-    const user = await getUserByEmail(userDTO);
+    const user = await getUserByEmail(userDTO.email);
     if (!user) return res.status(404).json("no se encontro datos");
     return res.status(200).json(user);
   } catch (error:any) {

@@ -1,6 +1,7 @@
-import { hash } from "bcrypt";
-import USER from "../models/USER";
+import { hash } from "bcryptjs";
+
 import { UserDTO } from "../dto/user.dto";
+import USER from "../models/USER";
 
 export async function findAllUser() {
   const data = await USER.findAll();
@@ -31,7 +32,7 @@ export async function getUserById(id: number) {
   return data;
 }
 
-export async function getUserByEmail(email: UserDTO) {
+export async function getUserByEmail(email: string) {
   const data = await USER.findOne({ where: { email } });
   return data;
 }

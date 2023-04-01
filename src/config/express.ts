@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
 import { userRouter } from "../routes/user.routes";
+import routerAuth from "../auth/auth.controller";
 
 
 
@@ -32,6 +33,7 @@ expressApp.use((_req: Request, res: Response, next: NextFunction) => {
 // Routes
 
 expressApp.use('/user',userRouter)
+expressApp.use('/auth',routerAuth)
 
 // Error catching endware.
 expressApp.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
