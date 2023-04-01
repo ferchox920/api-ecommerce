@@ -1,6 +1,8 @@
 import { Router, Request, Response } from "express";
-import { createUser, deleteUser, findAllUser, getUserByEmail, getUserById } from "../services/userService";
+import { createUser, deleteUser, findAllUser, getUserByEmail, getUserById, updateUser } from "../services/userService";
 import { UserDTO } from "../dto/user.dto";
+import { authenticateToken } from "../auth/strategy/authenticateMiddleware";
+
 
 const userRouter = Router();
 
@@ -64,6 +66,20 @@ userRouter.delete("/id/:id", async (req: Request, res: Response) => {
   }
 });
 
+userRouter.patch("/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { name, email, password, phone, avatar } = req.body;
+
+  try {
+    if (!id) {
+      throw new Error("ID de usuario no especificado");
+    }
+    const updatedUser = await updateUser(Number(id), { name, email, password, phone, avatar },+id);
+    res.json(updatedUser);
+  } catch (error:any) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
 
 

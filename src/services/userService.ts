@@ -1,7 +1,7 @@
 import { hash } from "bcryptjs";
-
 import { UserDTO } from "../dto/user.dto";
 import USER from "../models/USER";
+
 
 export async function findAllUser() {
   const data = await USER.findAll();
@@ -45,3 +45,29 @@ export async function deleteUser(id: number) {
   await user.destroy();
   return true;
 }
+
+export async function updateUser(id: number, updatedFields: Partial<UserDTO>, userId: number) {
+  const user = await getUserById(id);
+  if (!user) {
+    throw new Error("Usuario no encontrado");
+  }
+  if (user.id !== userId) {
+    throw new Error("No tienes permiso para actualizar este usuario");
+  }
+  if (updatedFields.email) {
+    const emailExists = await checkIfEmailExists(updatedFields.email);
+    if (emailExists) {
+      throw new Error("El correo ya está en uso");
+    }
+  }
+  if (updatedFields.password) {
+    updatedFields.password = await hash(updatedFields.password, 10);
+  }
+
+  await user.update(updatedFields);
+  return user;
+}
+
+
+
+ 
