@@ -8,14 +8,12 @@ export async function findAllUser() {
 }
 
 export async function createUser(userData: CreateUserDTO) {
-
-
   const { error, value } = UserSchema.validate(userData);
   if (error) {
     throw new Error(error.details[0].message);
   }
 
-  const { name, email, password, phone, avatar } = value;
+  const { name, email, password, phone, avatar, address } = value;
 
   const emailExists = await checkIfEmailExists(email);
   if (emailExists) {
@@ -29,6 +27,7 @@ export async function createUser(userData: CreateUserDTO) {
     password: hashedPassword,
     phone,
     avatar,
+    address
   });
   return user;
 }
@@ -57,11 +56,9 @@ export async function updateUser(
   updatedFields: Partial<CreateUserDTO>,
   userId: number
 ) {
-
-  
-  const { error } = UserSchema.validate(updatedFields);
+  const { error, value } = UserSchema.validate(updatedFields);
   if (error) {
-    throw new Error(`Error de validación: ${error.message}`);
+    throw new Error(error.details[0].message);
   }
 
   const user = await getUserById(id);
@@ -71,18 +68,18 @@ export async function updateUser(
   if (user.id !== userId) {
     throw new Error("No tienes permiso para actualizar este usuario");
   }
-  if (updatedFields.email) {
-    const emailExists = await checkIfEmailExists(updatedFields.email);
+  if (value.email) {
+    const emailExists = await checkIfEmailExists(value.email);
     if (emailExists) {
       throw new Error("El correo ya está en uso");
     }
   }
-  if (updatedFields.password) {
-    updatedFields.password = await hash(updatedFields.password, 10);
+  if (value.password) {
+    value.password = await hash(value.password, 10);
   }
 
-  await user.update(updatedFields);
-  return user;
+  const updatedUser = await user.update(value);
+  return updatedUser;
 }
 
 async function checkIfEmailExists(email: string) {

@@ -8,7 +8,9 @@ interface UserAttributes {
   password: string;
   phone?: string | null;
   avatar?: string | null;
+  address?: string | null;
 }
+
 
 
 interface UserModel extends Model<UserAttributes>, UserAttributes {}
@@ -37,6 +39,10 @@ const USER = sequelize.define<UserModel>("User", {
     allowNull: true,
   },
   avatar: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  address: {
     type: DataTypes.STRING,
     allowNull: true,
   },
